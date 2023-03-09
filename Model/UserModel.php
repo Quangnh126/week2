@@ -2,7 +2,12 @@
 
 class UserModel extends Database {
 
+    const key_hmac = 'sdrwe#$%^&fđg!hfdj478FHsdjfsjfhekjsdmfn7347#$%#&^&*^F%&*&(_F';
+
     public function login($username, $password){
+
+        $password = hash_hmac('sha256', $password, self::key_hmac);
+
         $sql = "SELECT * FROM `user` WHERE username = '{$username}' AND `password` = '{$password}'";
 
         $result = $this->excuteQueryLoad($sql);
@@ -23,8 +28,10 @@ class UserModel extends Database {
 
     public function register($account){
 
+        $password = hash_hmac('sha256', $account->password, self::key_hmac);
+
         $sql = "INSERT INTO `user` (`username`, `password`, `name`, `gender`, `telephone`, `address`) 
-        VALUES ('{$account->username}', '{$account->password}', '{$account->name}', '{$account->gender}', '{$account->telephone}', '{$account->address}')";
+        VALUES ('{$account->username}', '{$password}', '{$account->name}', '{$account->gender}', '{$account->telephone}', '{$account->address}')";
 
         $result = $this->excuteQuery($sql);
 
